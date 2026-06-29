@@ -1,0 +1,63 @@
+<% content_for :page_title, "Configuración" %>
+
+<div class="max-w-2xl space-y-8">
+  <!-- Profile Settings -->
+  <div class="bg-white rounded-xl border border-gray-200 p-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-6">Perfil del Negocio</h2>
+    <%= form_with model: @user, url: settings_path, method: :patch, class: "space-y-6" do |f| %>
+      <% if @user.errors.any? %>
+        <div class="rounded-md bg-red-50 p-4 border border-red-200">
+          <h3 class="text-sm font-medium text-red-800"><%= pluralize(@user.errors.count, "error") %> impidieron guardar:</h3>
+          <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+            <% @user.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.label :business_name, "Nombre del Negocio", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :business_name, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+      </div>
+
+      <div>
+        <%= f.label :email, "Correo Electrónico", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.email_field :email, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <%= f.submit "Guardar Cambios", class: "inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Subscription Info -->
+  <div class="bg-white rounded-xl border border-gray-200 p-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Suscripción</h2>
+    <div class="bg-gray-50 rounded-lg p-4">
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <p class="text-sm font-medium text-gray-900">Plan Actual</p>
+          <p class="text-xs text-gray-500">Gratuito - Prueba</p>
+        </div>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Activo</span>
+      </div>
+      <p class="text-xs text-gray-400 mt-2">Próximamente podrás actualizar a un plan premium con más funcionalidades. Pagos vía dLocal / PagoPar.</p>
+    </div>
+    <div class="mt-4 border-t border-gray-200 pt-4">
+      <h3 class="text-sm font-medium text-gray-900 mb-2">Métodos de Pago (Próximamente)</h3>
+      <div class="flex items-center gap-3 text-sm text-gray-500">
+        <span class="inline-flex items-center px-2 py-1 bg-gray-100 rounded text-xs">dLocal</span>
+        <span class="inline-flex items-center px-2 py-1 bg-gray-100 rounded text-xs">PagoPar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danger Zone -->
+  <div class="bg-white rounded-xl border border-red-200 p-6">
+    <h2 class="text-lg font-semibold text-red-900 mb-2">Zona Peligrosa</h2>
+    <p class="text-sm text-gray-500 mb-4">Eliminar tu cuenta y todos tus datos. Esta acción no se puede deshacer.</p>
+    <%= button_to "Eliminar mi cuenta", registration_path(current_user), data: { turbo_method: :delete, turbo_confirm: "¿Estás absolutamente seguro? Se eliminarán todos tus datos." }, class: "inline-flex items-center px-4 py-2 border border-red-300 rounded-lg shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50" %>
+  </div>
+</div>

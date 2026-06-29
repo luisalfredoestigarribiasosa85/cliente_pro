@@ -1,0 +1,44 @@
+<%= form_with(model: customer, class: "space-y-6") do |f| %>
+  <% if customer.errors.any? %>
+    <div class="rounded-md bg-red-50 p-4 border border-red-200">
+      <h3 class="text-sm font-medium text-red-800"><%= pluralize(customer.errors.count, "error") %> impidieron guardar:</h3>
+      <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+        <% customer.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div>
+      <%= f.label :name, "Nombre", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :name, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm", placeholder: "Nombre del cliente", required: true %>
+    </div>
+
+    <div>
+      <%= f.label :phone, "Teléfono", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.telephone_field :phone, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm", placeholder: "+595 981 123 456", required: true %>
+    </div>
+
+    <div>
+      <%= f.label :status, "Estado", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.select :status, options_for_select([["Nuevo", "new"], ["Interesado", "interested"], ["Frecuente", "frequent"], ["Perdido", "lost"]], customer.status), {}, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+    </div>
+
+    <div>
+      <%= f.label :last_contact_date, "Último Contacto", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.date_field :last_contact_date, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :notes, "Notas", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.text_area :notes, rows: 4, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm", placeholder: "Información adicional sobre el cliente..." %>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <%= f.submit customer.new_record? ? "Crear Cliente" : "Actualizar Cliente", class: "inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+    <%= link_to "Cancelar", customers_path, class: "text-sm text-gray-500 hover:text-gray-700" %>
+  </div>
+<% end %>

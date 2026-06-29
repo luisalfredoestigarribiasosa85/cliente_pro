@@ -1,0 +1,32 @@
+<%= form_with(model: reminder, url: reminder.new_record? ? reminders_path : reminder_path(reminder), class: "space-y-6") do |f| %>
+  <% if reminder.errors.any? %>
+    <div class="rounded-md bg-red-50 p-4 border border-red-200">
+      <h3 class="text-sm font-medium text-red-800"><%= pluralize(reminder.errors.count, "error") %> impidieron guardar:</h3>
+      <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+        <% reminder.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :customer_id, "Cliente", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.collection_select :customer_id, current_user.customers.order(:name), :id, :name, { prompt: "Seleccionar cliente", selected: params[:customer_id] }, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm" %>
+  </div>
+
+  <div>
+    <%= f.label :message, "Mensaje", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.text_area :message, rows: 3, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm", placeholder: "¿Qué necesitas recordar?", required: true %>
+  </div>
+
+  <div>
+    <%= f.label :remind_at, "Fecha y Hora", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.datetime_local_field :remind_at, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm", required: true %>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <%= f.submit reminder.new_record? ? "Crear Recordatorio" : "Actualizar Recordatorio", class: "inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700" %>
+    <%= link_to "Cancelar", reminders_path, class: "text-sm text-gray-500 hover:text-gray-700" %>
+  </div>
+<% end %>

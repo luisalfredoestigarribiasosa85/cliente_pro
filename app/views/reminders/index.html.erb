@@ -1,0 +1,118 @@
+<% content_for :page_title, "Recordatorios" %>
+
+<div class="sm:flex sm:items-center sm:justify-between mb-6">
+  <div class="sm:flex-auto">
+    <p class="text-sm text-gray-500">Gestiona tus recordatorios de seguimiento.</p>
+  </div>
+  <div class="mt-4 sm:mt-0">
+    <%= link_to "Nuevo Recordatorio", new_reminder_path, class: "inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700" %>
+  </div>
+</div>
+
+<!-- Overdue Reminders -->
+<% if @overdue_reminders.any? %>
+  <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+    <h3 class="text-sm font-medium text-red-800 mb-2">Vencidos (<%= @overdue_reminders.count %>)</h3>
+    <div class="space-y-2">
+      <% @overdue_reminders.each do |reminder| %>
+        <div class="flex items-center justify-between bg-white rounded-lg p-3 border border-red-100">
+          <div class="flex items-center gap-3">
+            <div class="flex-shrink-0 w-2 h-2 rounded-full bg-red-400"></div>
+            <div>
+              <p class="text-sm font-medium text-gray-900"><%= reminder.message %></p>
+              <p class="text-xs text-gray-500">
+                <%= reminder.customer.name %> &middot; Venció <%= time_ago_in_words(reminder.remind_at) %> atrás
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <%= link_to toggle_done_reminder_path(reminder), data: { turbo_method: :patch }, class: "inline-flex items-center px-2.5 py-1.5 border border-gray-200 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-green-50 hover:text-green-700" do %>
+              Completar
+            <% end %>
+            <%= link_to "Eliminar", reminder_path(reminder), data: { turbo_method: :delete, turbo_confirm: "¿Estás seguro?" }, class: "text-xs text-red-600 hover:text-red-800" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<!-- Upcoming Reminders -->
+<div class="bg-white rounded-xl border border-gray-200">
+  <div class="px-6 py-4 border-b border-gray-200">
+    <h3 class="text-sm font-semibold text-gray-900">Pendientes (<%= @pending_reminders.count %>)</h3>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mensaje</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <% @pending_reminders.each do |reminder| %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 text-sm text-gray-900"><%= reminder.message %></td>
+            <td class="px-6 py-4 text-sm text-gray-500">
+              <%= link_to reminder.customer.name, customer_path(reminder.customer), class: "text-indigo-600 hover:text-indigo-500" %>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-500">
+              <%= reminder.remind_at.strftime("%d/%m/%Y %H:%M") %>
+            </td>
+            <td class="px-6 py-4 text-right text-sm">
+              <div class="flex items-center justify-end gap-2">
+                <%= link_to toggle_done_reminder_path(reminder), data: { turbo_method: :patch }, class: "text-green-600 hover:text-green-800" do %>
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <% end %>
+                <%= link_to "Editar", edit_reminder_path(reminder), class: "text-indigo-600 hover:text-indigo-900" %>
+                <%= link_to "Eliminar", reminder_path(reminder), data: { turbo_method: :delete, turbo_confirm: "¿Estás seguro?" }, class: "text-red-600 hover:text-red-900" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @pending_reminders.empty? && @overdue_reminders.empty? %>
+          <tr>
+            <td colspan="4" class="px-6 py-12 text-center text-sm text-gray-500">
+              <p class="mb-2">No hay recordatorios pendientes.</p>
+              <%= link_to "Crear recordatorio", new_reminder_path, class: "text-indigo-600 hover:text-indigo-500 font-medium" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Completed Reminders -->
+<% if current_user.reminders.completed.any? %>
+  <div class="bg-white rounded-xl border border-gray-200 mt-6">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-sm font-semibold text-gray-900">Completados (<%= current_user.reminders.completed.count %>)</h3>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mensaje</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <% current_user.reminders.completed.recent.limit(10).each do |reminder| %>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-sm text-gray-500 line-through"><%= reminder.message %></td>
+              <td class="px-6 py-4 text-sm text-gray-500"><%= reminder.customer.name %></td>
+              <td class="px-6 py-4 text-right text-sm">
+                <%= link_to "Eliminar", reminder_path(reminder), data: { turbo_method: :delete, turbo_confirm: "¿Estás seguro?" }, class: "text-red-600 hover:text-red-900" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>

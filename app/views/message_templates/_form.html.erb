@@ -1,0 +1,28 @@
+<%= form_with(model: template, class: "space-y-6") do |f| %>
+  <% if template.errors.any? %>
+    <div class="rounded-md bg-red-50 p-4 border border-red-200">
+      <h3 class="text-sm font-medium text-red-800"><%= pluralize(template.errors.count, "error") %> impidieron guardar:</h3>
+      <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+        <% template.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, "Título", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.text_field :title, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm", placeholder: "Ej: Saludo inicial", required: true %>
+  </div>
+
+  <div>
+    <%= f.label :content, "Contenido del mensaje", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.text_area :content, rows: 6, class: "block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm font-mono", placeholder: "Escribe el mensaje aquí... Usa {{nombre}} y {{telefono}} para personalizar.", required: true %>
+    <p class="mt-1 text-xs text-gray-400">Puedes usar <code class="text-indigo-600">{{nombre}}</code> y <code class="text-indigo-600">{{telefono}}</code> para personalizar al copiar desde un cliente.</p>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <%= f.submit template.new_record? ? "Crear Plantilla" : "Actualizar Plantilla", class: "inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700" %>
+    <%= link_to "Cancelar", message_templates_path, class: "text-sm text-gray-500 hover:text-gray-700" %>
+  </div>
+<% end %>
