@@ -1,5 +1,6 @@
 class Customer < ApplicationRecord
   belongs_to :user
+  has_many :reminders, dependent: :destroy
 
   enum :status, { new: 0, interested: 1, frequent: 2, lost: 3 }, prefix: true
 
